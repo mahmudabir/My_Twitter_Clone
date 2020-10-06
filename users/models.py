@@ -5,8 +5,21 @@ from django.contrib.auth.models import (User, AbstractBaseUser,
 from PIL import Image
 from django.utils import timezone
 
+from django.db.models.signals import post_save, pre_save, post_delete
+from django.dispatch import receiver
 
 # Create your models here.
+
+
+def upload_location(instance, filename):
+    file_path = 'users/{user_id}/{date_time}-{filename}'.format(
+        user_id=str(instance.id),
+        filename=filename,
+        date_time=timezone.now(),
+    )
+    return file_path
+
+
 class ProfileManager(BaseUserManager):
     """
     docstring
@@ -93,20 +106,23 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     """
     docstring
     """
-
     username = models.CharField(max_length=30, unique=True)
     email = models.EmailField(verbose_name='email', max_length=60, unique=True)
     name = models.CharField(max_length=150)
     date_of_birth = models.DateField(blank=True, null=True)
-    image = models.ImageField(default='default.png', upload_to='profile_pics')
+    image = models.ImageField(upload_to=upload_location,
+                              null=False,
+                              blank=False)
     date_joined = models.DateTimeField(verbose_name='date joined',
                                        auto_now_add=True)
-    last_login = models.DateTimeField(verbose_name='last login', default=timezone.now)
+    last_login = models.DateTimeField(verbose_name='last login',
+                                      default=timezone.now)
     is_admin = models.BooleanField(verbose_name='Admin', default=False)
     is_staff = models.BooleanField(verbose_name='Staff', default=False)
-    is_superuser = models.BooleanField(verbose_name='Super User', default=False)
+    is_superuser = models.BooleanField(verbose_name='Super User',
+                                       default=False)
     is_active = models.BooleanField(verbose_name='Active', default=True)
-    is_user = models.BooleanField(verbose_name='User',default=True)
+    is_user = models.BooleanField(verbose_name='User', default=True)
 
     objects = ProfileManager()
 
@@ -137,14 +153,14 @@ class Profile(AbstractBaseUser, PermissionsMixin):
              update_fields=None):
         super().save()
 
-        if self.is_superuser == False:
-            img = Image.open(self.image.path)
-            if img.height > 300 or img.width > 300:
-                output_size = (300, 300)
-                img.thumbnail(output_size)
-                img.save(self.image.path)
-        else:
-            pass
+        # if self.is_superuser == False:
+        #     img = Image.open(self.image.path)
+        #     if img.height > 300 or img.width > 300:
+        #         output_size = (300, 300)
+        #         img.thumbnail(output_size)
+        #         img.save(self.image.path)
+        # else:
+        #     pass
 
 
 class Follow(models.Model):

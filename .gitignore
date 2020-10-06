@@ -133,7 +133,8 @@ dmypy.json
 bootstrap/
 
 # This project (Temporary)
-media/ 
+# media/ 
+profile_pics/
 # migrations/
 
 
