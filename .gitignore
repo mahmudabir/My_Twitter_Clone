@@ -134,7 +134,7 @@ bootstrap/
 
 # This project (Temporary)
 media/ 
-migrations/
+# migrations/
 
 
 # Delete when project is finished
