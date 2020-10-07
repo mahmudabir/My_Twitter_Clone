@@ -6,7 +6,13 @@ from django.utils.text import slugify
 
 
 
-# signal that gets fired after the user is saved
+
 @receiver(post_delete, sender=Profile)
 def submission_delete(sender, instance, **kwargs):
+    """
+    When a profile is deleted the corresponding
+     image is also deleted form media directory
+    """
     instance.image.delete(False)
+
+
