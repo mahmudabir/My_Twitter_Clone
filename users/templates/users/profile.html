@@ -3,17 +3,41 @@
 {% block content %}
     <div class="container">
         <h3 class="white-important">
-            Change profile data
+
+            {% if others_model %}
+                {{ others_model.name }}'s Profile
+                {#                {{others_form.image}}#}
+            {% else %}
+                Change profile data
+            {% endif %}
+
+
         </h3>
         <form class="col-6 no-padding" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <fieldset class="form-group">
-                {{ form | crispy }}
-{#                {{ pform | crispy }}#}
+                {% if others_model %}
+                    <img align="right" src="../../..{{ others_model.image.url }}" alt="" height="300">
+                    <strong><label style="padding-right: 1rem;">Name: </label></strong>
+                    <label>{{ others_model.name }}</label><br>
+                    <strong><label style="padding-right: 1rem;">Email: </label></strong>
+                    <label>{{ others_model.email }}</label><br>
+                    <strong><label style="padding-right: 1.5rem;">DOB: </label></strong>
+                    <label>{{ others_model.date_of_birth }}</label><br>
+                {% else %}
+                    {{ form | crispy }}
+                {% endif %}
+
             </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-primary" type="submit">Change data</button>
-            </div>
+            {% if others_model %}
+
+            {% else %}
+                <div class="form-group">
+                    <button class="btn btn-outline-primary" type="submit">Change data</button>
+                </div>
+            {% endif %}
+
+
         </form>
     </div>
 {% endblock content %}

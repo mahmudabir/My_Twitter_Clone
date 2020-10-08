@@ -108,24 +108,29 @@ def profile_view(request, pk):
     user = Profile.objects.get(pk=pk)
     if request.user.is_authenticated and request.user.pk == user.pk:
         form = UserUpdateForm(instance=user)
+        model = Profile.objects.get(pk=user.pk)
 
         if request.method == 'POST':
             form = UserUpdateForm(request.POST, request.FILES, instance=user)
 
+
             if form.is_valid():
-                # created_prof = form.save(commit=False)
-                # created_prof.user = request.user
-                # created_prof.save()
-                form.save()
-                messages.success(request, "Your profile is updated.")
+                try:
+                    created_prof = form.save(commit=False)
+                    created_prof.save()
+                    messages.success(request, "Your profile is updated.")
+                except ValueError:
+                    messages.success(request, "Your profile was not updated.")
                 return redirect('profile', pk=pk)
         else:
             form = UserUpdateForm(instance=user)
         return render(request, 'users/profile.html', {'pk': pk, 'form': form})
     else:
-        form = UserUpdateForm(instance=user)
+        others_model = Profile.objects.get(pk=user.pk)
+        others_form = UserUpdateForm(instance=user)
         context = {
-            'form': form
+            'others_form': others_form,
+            'others_model': others_model,
         }
         messages.success(request, "You are not authenticated to modify anything.")
         return render(request, 'users/profile.html', context)

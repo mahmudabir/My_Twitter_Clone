@@ -110,7 +110,7 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     docstring
     """
     username = models.CharField(max_length=30, unique=True)
-    email = models.EmailField(verbose_name='email', max_length=60, unique=True)
+    email = models.EmailField(verbose_name='email', max_length=60)
     name = models.CharField(max_length=150)
     date_of_birth = models.DateField(blank=True, null=True)
     image = models.ImageField(upload_to=upload_location,
