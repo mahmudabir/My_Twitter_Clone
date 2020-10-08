@@ -86,6 +86,7 @@ def login_view(request):
 
 @login_required
 def profile_view(request, pk):
+
     try:
         user = Profile.objects.get(pk=pk)
     except:
@@ -104,7 +105,7 @@ def profile_view(request, pk):
                     created_prof = form.save(commit=False)
                     created_prof.save()
                     messages.success(request, "Your profile is updated.")
-                except ValueError:
+                except:
                     messages.success(request, "Your profile was not updated.")
                 return redirect('profile', pk=pk)
         else:
