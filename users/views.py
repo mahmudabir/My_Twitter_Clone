@@ -84,28 +84,14 @@ def login_view(request):
 
 # ################# Profile View View(Start) ################# #
 
-# @login_required
-# def profile_view(request, pk):
-#     user = Profile.objects.get(pk=pk)
-#
-#     if request.user.is_authenticated and request.user.pk == user.pk:
-#         if request.method == 'POST':
-#             form = UserUpdateForm(request.POST, request.FILES, instance=user)
-#
-#             if form.is_valid():
-#                 created_prof = form.save(commit=False)
-#                 created_prof.user = request.user
-#                 created_prof.save()
-#
-#                 return redirect('profile', pk=pk)
-#     else:
-#         raise PermissionError("Failed to get the data.")
-#     return render(request, 'users/profile.html', {'pk': pk, 'form': form})
-
-
 @login_required
 def profile_view(request, pk):
-    user = Profile.objects.get(pk=pk)
+    try:
+        user = Profile.objects.get(pk=pk)
+    except:
+        user = Profile.objects.get(pk=request.user.pk)
+        messages.success(request, "The profile you want Does Not Exist")
+
     if request.user.is_authenticated and request.user.pk == user.pk:
         form = UserUpdateForm(instance=user)
         model = Profile.objects.get(pk=user.pk)
