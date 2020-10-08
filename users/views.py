@@ -113,7 +113,6 @@ def profile_view(request, pk):
         if request.method == 'POST':
             form = UserUpdateForm(request.POST, request.FILES, instance=user)
 
-
             if form.is_valid():
                 try:
                     created_prof = form.save(commit=False)
@@ -124,7 +123,13 @@ def profile_view(request, pk):
                 return redirect('profile', pk=pk)
         else:
             form = UserUpdateForm(instance=user)
-        return render(request, 'users/profile.html', {'pk': pk, 'form': form})
+            model = Profile.objects.get(pk=user.pk)
+            context = {
+                'form': form,
+                'model': model,
+                'pk': pk
+            }
+        return render(request, 'users/profile.html', context)
     else:
         others_model = Profile.objects.get(pk=user.pk)
         others_form = UserUpdateForm(instance=user)
