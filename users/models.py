@@ -3,10 +3,12 @@ from django.db import models
 from django.contrib.auth.models import (User, AbstractBaseUser,
                                         BaseUserManager, PermissionsMixin)
 from PIL import Image
+from django.urls import reverse
 from django.utils import timezone
 
 from django.db.models.signals import post_save, pre_save, post_delete
 from django.dispatch import receiver
+
 
 # Create your models here.
 
@@ -24,6 +26,7 @@ class ProfileManager(BaseUserManager):
     """
     docstring
     """
+
     def _create_user(self, username, name, email, password, **extra_fields):
         if not username:
             raise ValueError("Users must have an Email Address.")
@@ -146,21 +149,15 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     def following(self):
         return Follow.objects.filter(user=self.user).count()
 
+    def get_absolute_url(self):
+        return reverse('profile', kwargs={'pk': self.id})
+
     def save(self,
              force_insert=False,
              force_update=False,
              using=None,
              update_fields=None):
         super().save()
-
-        # if self.is_superuser == False:
-        #     img = Image.open(self.image.path)
-        #     if img.height > 300 or img.width > 300:
-        #         output_size = (300, 300)
-        #         img.thumbnail(output_size)
-        #         img.save(self.image.path)
-        # else:
-        #     pass
 
 
 class Follow(models.Model):

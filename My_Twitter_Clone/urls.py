@@ -59,7 +59,8 @@ urlpatterns = [
     path('register/', users_views.user_create_view, name='register_users'),
 
      # Show Profile
-    # path('profile/', users_views.profile, name='profile'),
+    path('profile/<int:pk>/', users_views.profile_view, name='profile'),
+    # path('profile/<int:pk>/', users_views.ProfileView.as_view(), name='profile'),
 
     # path('search/', users_views.SearchView, name='search'),
 

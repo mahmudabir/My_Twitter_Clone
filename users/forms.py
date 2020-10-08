@@ -32,7 +32,15 @@ class UserUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ['name', 'username', 'email', 'date_of_birth']
+        fields = ['name', 'username', 'email', 'date_of_birth', 'image']
+
+        widgets = {
+            'date_of_birth': forms.DateInput(
+                attrs={
+                    'type': 'date'
+                }
+            )
+        }
 
     def clean_username(self):
         if self.is_valid():
@@ -42,7 +50,7 @@ class UserUpdateForm(forms.ModelForm):
                 profile = Profile.objects.exclude(pk=self.instance.pk).get(username=username)
             except Profile.DoesNotExist:
                 return username
-            raise forms.ValidationError('Username "%s" is already in use.' %username)
+            raise forms.ValidationError('Username "%s" is already in use.' % username)
 
     def clean_email(self):
         if self.is_valid():
@@ -52,13 +60,15 @@ class UserUpdateForm(forms.ModelForm):
                 profile = Profile.objects.exclude(pk=self.instance.pk).get(email=email)
             except Profile.DoesNotExist:
                 return email
-            raise forms.ValidationError('Email "%s" is already in use.' %email)
+            raise forms.ValidationError('Email "%s" is already in use.' % email)
 
 
-class ProfilePhotoUpdateForm(forms.ModelForm):
-    class Meta:
-        model = Profile
-        fields = ['image']
+# class ProfilePhotoUpdateForm(forms.ModelForm):
+#     image = forms.ImageField()
+#
+#     class Meta:
+#         model = Profile
+#         fields = ['image']
 
 
 class LoginForm(forms.ModelForm):
