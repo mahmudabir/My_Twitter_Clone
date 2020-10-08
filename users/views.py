@@ -113,15 +113,21 @@ def profile_view(request, pk):
             form = UserUpdateForm(request.POST, request.FILES, instance=user)
 
             if form.is_valid():
-                created_prof = form.save(commit=False)
-                created_prof.user = request.user
-                created_prof.save()
-
+                # created_prof = form.save(commit=False)
+                # created_prof.user = request.user
+                # created_prof.save()
+                form.save()
+                messages.success(request, "Your profile is updated.")
                 return redirect('profile', pk=pk)
         else:
             form = UserUpdateForm(instance=user)
         return render(request, 'users/profile.html', {'pk': pk, 'form': form})
     else:
-        return messages.error(request,"You are not Authenticated")
+        form = UserUpdateForm(instance=user)
+        context = {
+            'form': form
+        }
+        messages.success(request, "You are not authenticated to modify anything.")
+        return render(request, 'users/profile.html', context)
 
 # ################# Profile View View(End) ################# #
