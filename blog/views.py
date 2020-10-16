@@ -19,48 +19,48 @@ def is_users(post_user, logged_user):
     return post_user == logged_user
 
 
-PAGINATION_COUNT = 3
+PAGINATION_COUNT = 4
 
 # Create your views here.
 
 
 # ################# Post List View (Start) ################# #
-class PostListView(LoginRequiredMixin, ListView):
-    model = Post
-    template_name = 'blog/home.html'
-    context_object_name = 'posts'
-    ordering = ['-date_posted']
-    paginate_by = PAGINATION_COUNT
+# class PostListView(LoginRequiredMixin, ListView):
+#     model = Post
+#     template_name = 'blog/home.html'
+#     context_object_name = 'posts'
+#     ordering = ['-date_posted']
+#     paginate_by = PAGINATION_COUNT
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
 
-        all_users = []
+#         all_users = []
 
-        context_counter = Post.objects.values('author') \
-            .annotate(author_count=Count('author')) \
-                .order_by('-author_count')[:6]
+#         context_counter = Post.objects.values('author') \
+#             .annotate(author_count=Count('author')) \
+#                 .order_by('-author_count')[:6]
 
-        for aux in context_counter:
-            all_users.append(Profile.objects.filter(pk=aux['author']).first())
+#         for aux in context_counter:
+#             all_users.append(Profile.objects.filter(pk=aux['author']).first())
 
-        context['preference'] = Preference.objects.all()
+#         context['preference'] = Preference.objects.all()
 
-        context["all_users"] = all_users
-        print(all_users, file=sys.stderr)
-        return context
+#         context["all_users"] = all_users
+#         print(all_users, file=sys.stderr)
+#         return context
 
-    def get_queryset(self):
-        user = self.request.user
-        qs = Follow.objects.filter(user=user)
+#     def get_queryset(self):
+#         user = self.request.user
+#         qs = Follow.objects.filter(user=user)
 
-        follows = [user]
+#         follows = [user]
 
-        for obj in qs:
-            follows.append(obj.follow_user)
-        return Post.objects.filter(author__in=follows).order_by('-date_posted')
+#         for obj in qs:
+#             follows.append(obj.follow_user)
+#         return Post.objects.filter(author__in=follows).order_by('-date_posted')
 
-        return super().get_queryset()
+#         return super().get_queryset()
 
 
 #####################################################
@@ -69,12 +69,24 @@ class PostListView(LoginRequiredMixin, ListView):
 def get_post_queryset(query=None, req=None):
     queryset = []
     queries = query.split(" ")
-    
-    for q in queries:
-        posts = Post.objects.filter(
-            Q(content__contains=q) | Q(content__icontains=q)).distinct()
-        for post in posts:
-            queryset.append(post)
+
+    if len(query)!=0:
+        for q in queries:
+            posts = Post.objects.filter(
+                Q(content__contains=q) | Q(content__icontains=q)).distinct()
+            for post in posts:
+                queryset.append(post)
+    else:
+        user = req.user
+        follow_obj = Follow.objects.filter(user=user)
+
+        follows = [user]
+
+        for obj in follow_obj:
+            follows.append(obj.follow_user)
+            posts = Post.objects.filter(author__in=follows).order_by('-date_posted')
+            for post in posts:
+                queryset.append(post)    
 
     # create unique set and then convert to list
     return list(set(queryset))
@@ -113,8 +125,7 @@ def post_list_view(request):
     if posts:
         pass
     else:
-        messages.success(
-            request, "There is to relevent results available you searched for")
+        messages.success(request, "There is to relevent available")
 
     return render(request, 'blog/home.html', context)
 
