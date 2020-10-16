@@ -1,38 +1,44 @@
-
 <style type="text/css">
-  .pagination {
-padding-bottom: 75px;
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    color: white;
-    text-align: center;
-  }
+    .pagination {
+        {#padding-bottom: 50px;#}
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        color: white;
+        text-align: center;
+        display: table-row;
+        {#height: 104px;#}
+    }
 </style>
 
 <!-- FILTERED Pagination -->
-<div>
-    <ul class="pagination justify-content-center">
-        {% if posts.has_previous %}
-        <li class=" page-item">
-            <a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}page={{ posts.previous_page_number }} ">&laquo;Previous</a>
-        </li>
-        {% endif %} {% for i in posts.paginator.page_range %} {% if posts.number == i %}
-        <li class="page-item active "><a class="page-link ">{{ i }}</a></li>
-        {% else %}
-        <li class="page-item "><a class="page-link " href="?{% if query %}q={{ query }}&{% endif %}page={{ i }} ">{{ i }}</a>
-        </li>
-        {% endif %} {% endfor %} {% if blog_posts.has_next %}
-        <li class="page-item ">
-            <a class="page-link " href="?{% if query %}q={{ query }}&{% endif %}page={{ posts.next_page_number }} ">Next</a>
-        </li>
-        <li class="page-item ">
-            <a class="page-link " href="?{% if query %}q={{ query }}&{% endif %}page={{ posts.paginator.num_pages }} ">Last&raquo;</a>
-        </li>
-        {% endif %}
-    </ul>
-</div>
+<div class="full-width d-flex justify-content-center pagination">
+                {% if is_paginated %}
+                    {% if page_obj.has_previous %}
+                        <a class="btn btn-sm btn-outline-secondary mb-4 mr-2"
+                                href="?page=1">First</a>
+                        <a class="btn btn-sm btn-outline-secondary mb-4 mr-2"
+                                href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <a class="btn btn-sm btn-info mb-4 mr-2"
+                                href="?page={{ num }}">{{ num }}</a>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <a class="btn btn-sm btn-outline-secondary mb-4 mr-2"
+                                href="?page={{ num }}">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <a class="btn btn-sm btn-outline-secondary mb-4 mr-2"
+                                href="?page={{ page_obj.next_page_number }}">Next</a>
+                           <a class="btn btn-sm btn-outline-secondary mb-4 mr-2"
+                            href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                    {% endif %}
+                {% endif %}
+            </div>
 <!-- end pagination-->
 
 

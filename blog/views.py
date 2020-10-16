@@ -19,48 +19,46 @@ def is_users(post_user, logged_user):
     return post_user == logged_user
 
 
-PAGINATION_COUNT = 4
+PAGINATION_COUNT = 3
 
 # Create your views here.
 
 
 # ################# Post List View (Start) ################# #
-# class PostListView(LoginRequiredMixin, ListView):
-#     model = Post
-#     template_name = 'blog/home.html'
-#     context_object_name = 'posts'
-#     ordering = ['-date_posted']
-#     paginate_by = PAGINATION_COUNT
+class PostListView(LoginRequiredMixin, ListView):
+    model = Post
+    template_name = 'blog/home.html'
+    context_object_name = 'posts'
+    ordering = ['-date_posted']
+    paginate_by = PAGINATION_COUNT
 
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
 
-#         all_users = []
+        all_users = []
+        data_counter = Post.objects.values('author')\
+            .annotate(author_count=Count('author'))\
+            .order_by('-author_count')[:6]
 
-#         context_counter = Post.objects.values('author') \
-#             .annotate(author_count=Count('author')) \
-#                 .order_by('-author_count')[:6]
+        for aux in data_counter:
+            all_users.append(Profile.objects.filter(pk=aux['author']).first())
+        # if Preference.objects.get(user = self.request.user):
+        #     data['preference'] = True
+        # else:
+        #     data['preference'] = False
+        data['preference'] = Preference.objects.all()
+        # print(Preference.objects.get(user= self.request.user))
+        data['all_users'] = all_users
+        print(all_users, file=sys.stderr)
+        return data
 
-#         for aux in context_counter:
-#             all_users.append(Profile.objects.filter(pk=aux['author']).first())
-
-#         context['preference'] = Preference.objects.all()
-
-#         context["all_users"] = all_users
-#         print(all_users, file=sys.stderr)
-#         return context
-
-#     def get_queryset(self):
-#         user = self.request.user
-#         qs = Follow.objects.filter(user=user)
-
-#         follows = [user]
-
-#         for obj in qs:
-#             follows.append(obj.follow_user)
-#         return Post.objects.filter(author__in=follows).order_by('-date_posted')
-
-#         return super().get_queryset()
+    def get_queryset(self):
+        user = self.request.user
+        qs = Follow.objects.filter(user=user)
+        follows = [user]
+        for obj in qs:
+            follows.append(obj.follow_user)
+        return Post.objects.filter(author__in=follows).order_by('-date_posted')
 
 
 #####################################################
