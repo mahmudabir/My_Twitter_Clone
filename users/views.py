@@ -27,6 +27,9 @@ from django.db.models import Q
 #     success_message = "Your profile was created successfully"
 
 
+###########################################
+
+
 def user_create_view(request):
     context = {}
     if request.method == "POST":
@@ -127,17 +130,3 @@ def profile_view(request, pk):
 
 
 # ################# Profile View View(End) ################# #
-
-
-# ################# Serach View (Start) ################# #
-# @login_required
-# def SearchView(request):
-#     if request.method == 'POST':
-#         kerko = request.POST.get('search')
-#         print(kerko)
-#         results = Profile.objects.filter(username__contains=kerko)
-#         context = {
-#             'results':results
-#         }
-#         return render(request, 'users/search_result.html', context)
-# ################# Serach View (End) ################# #
