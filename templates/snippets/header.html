@@ -9,7 +9,20 @@
         <a class="nav-item nav-link" href="{% url 'home' %}">Home</a>
       </div>
       <div class="navbar-nav pr-2">
-        {% if user.is_authenticated %} {% comment %}
+        {% if user.is_authenticated %} 
+        {% comment %} Search Bar {% endcomment %}
+        <div class="search-bar mt-sm-2 mr-2">
+          <form method="get">
+            <input
+              class="form-control"
+              type="text"
+              name="q"
+              id="id_q"
+              placeholder="Search..."
+            />
+          </form>
+        </div>
+        {% comment %} Search Bar {% endcomment %} {% comment %}
         <a class="nav-item nav-link" href="{% url 'post_create' %}"
           >Create a Tweet</a
         >

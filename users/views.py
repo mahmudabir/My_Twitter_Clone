@@ -129,7 +129,7 @@ def profile_view(request, pk):
 # ################# Profile View View(End) ################# #
 
 
-# ################# Serach View View (Start) ################# #
+# ################# Serach View (Start) ################# #
 # @login_required
 # def SearchView(request):
 #     if request.method == 'POST':
@@ -140,4 +140,4 @@ def profile_view(request, pk):
 #             'results':results
 #         }
 #         return render(request, 'users/search_result.html', context)
-# ################# Serach View View (End) ################# #
+# ################# Serach View (End) ################# #
