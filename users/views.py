@@ -11,7 +11,7 @@ from django.views.generic import CreateView, DetailView, UpdateView
 
 from .models import Profile
 from .forms import UserRegistrationForm, LoginForm, UserUpdateForm
-
+from django.db.models import Q
 
 # Create your views here.
 
@@ -50,6 +50,7 @@ def user_create_view(request):
 
 # ################# Log In $ Log Out View (Start) ################# #
 
+
 def logout_view(request):
     logout(request)
     return redirect('login')
@@ -81,8 +82,8 @@ def login_view(request):
 
 # ################# Log In $ Log Out View(End) ################# #
 
-
 # ################# Profile View View(Start) ################# #
+
 
 @login_required
 def profile_view(request, pk):
@@ -111,11 +112,7 @@ def profile_view(request, pk):
         else:
             form = UserUpdateForm(instance=user)
             model = Profile.objects.get(pk=user.pk)
-            context = {
-                'form': form,
-                'model': model,
-                'pk': pk
-            }
+            context = {'form': form, 'model': model, 'pk': pk}
         return render(request, 'users/profile.html', context)
     else:
         others_model = Profile.objects.get(pk=user.pk)
@@ -124,7 +121,23 @@ def profile_view(request, pk):
             'others_form': others_form,
             'others_model': others_model,
         }
-        messages.success(request, "You are not authenticated to modify anything.")
+        messages.success(request,
+                         "You are not authenticated to modify anything.")
         return render(request, 'users/profile.html', context)
 
+
 # ################# Profile View View(End) ################# #
+
+
+# ################# Serach View View (Start) ################# #
+# @login_required
+# def SearchView(request):
+#     if request.method == 'POST':
+#         kerko = request.POST.get('search')
+#         print(kerko)
+#         results = Profile.objects.filter(username__contains=kerko)
+#         context = {
+#             'results':results
+#         }
+#         return render(request, 'users/search_result.html', context)
+# ################# Serach View View (End) ################# #

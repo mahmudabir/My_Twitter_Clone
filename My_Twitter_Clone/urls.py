@@ -62,11 +62,11 @@ urlpatterns = [
     path('profile/<int:pk>/', users_views.profile_view, name='profile'),
     # path('profile/<int:pk>/', users_views.ProfileView.as_view(), name='profile'),
 
+    # Search URL
     # path('search/', users_views.SearchView, name='search'),
 
      # Go to Blog urls
-    # path('', include('blog.urls')),
-    path('', blog_views.index, name='home'),
+    path('', include('blog.urls')),
 
 ]
 
