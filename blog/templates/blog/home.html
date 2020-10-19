@@ -9,12 +9,20 @@
                     Profile
                 </h3>
                 <article class="media content-section" style="height: 140px; width: 100%">
-                    {% if user_profile != None %}
+                    {% if user %}
                         <div class="mt-2 d-flex full-width align-items-center">
-                            <img
+                        {% if not user.image.url %}
+                        <img
                                     class="rounded-circle mr-3 img-fluid"
                                     style="width: 90px; height: 90px;"
                                     src="{{ user.image.url }}">
+                            {% else %}
+                            <img
+                                    class="rounded-circle mr-3 img-fluid"
+                                    style="width: 90px; height: 90px;"
+                                    src="{% static 'default.png' %}" alt="">
+                        {% endif %}
+
                             <div>
                                 <h4 style="text-align: left"
                                     class="white-important">
@@ -29,10 +37,10 @@
                         </div>
                     {% else %}
                         <div class="mt-2 d-flex full-width align-items-center">
-                            <img
-                                    class="rounded-circle mr-3"
-                                    style="width: 90px; height: 90px;"
-                                    src="{{ user.image.url }}">
+{#                            <img#}
+{#                                    class="rounded-circle mr-3"#}
+{#                                    style="width: 90px; height: 90px;"#}
+{#                                    src="{{ user.image.url }}">#}
                             <div>
                                 <h4 style="text-align: left"
                                     class="white-important">

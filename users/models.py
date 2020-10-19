@@ -113,9 +113,9 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name='email', max_length=60)
     name = models.CharField(max_length=150)
     date_of_birth = models.DateField(blank=True, null=True)
-    image = models.ImageField(upload_to=upload_location,
+    image = models.ImageField(upload_to='profile_photos', default='default.png',
                               null=False,
-                              blank=False)
+                              blank=True)
     date_joined = models.DateTimeField(verbose_name='date joined',
                                        auto_now_add=True)
     last_login = models.DateTimeField(verbose_name='last login',
