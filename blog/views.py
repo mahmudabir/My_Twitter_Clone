@@ -21,6 +21,7 @@ def is_users(post_user, logged_user):
 
 PAGINATION_COUNT = 3
 
+
 # Create your views here.
 
 
@@ -36,9 +37,9 @@ class PostListView(LoginRequiredMixin, ListView):
         data = super().get_context_data(**kwargs)
 
         all_users = []
-        data_counter = Post.objects.values('author')\
-            .annotate(author_count=Count('author'))\
-            .order_by('-author_count')[:6]
+        data_counter = Post.objects.values('author') \
+                           .annotate(author_count=Count('author')) \
+                           .order_by('-author_count')[:6]
 
         for aux in data_counter:
             all_users.append(Profile.objects.filter(pk=aux['author']).first())
@@ -68,7 +69,7 @@ def get_post_queryset(query=None, req=None):
     queryset = []
     queries = query.split(" ")
 
-    if len(query)!=0:
+    if len(query) != 0:
         for q in queries:
             posts = Post.objects.filter(
                 Q(content__contains=q) | Q(content__icontains=q)).distinct()
@@ -84,9 +85,9 @@ def get_post_queryset(query=None, req=None):
             follows.append(obj.follow_user)
             posts = Post.objects.filter(author__in=follows).order_by('-date_posted')
             for post in posts:
-                queryset.append(post)    
+                queryset.append(post)
 
-    # create unique set and then convert to list
+                # create unique set and then convert to list
     return list(set(queryset))
 
 
@@ -120,13 +121,29 @@ def post_list_view(request):
 
     context['posts'] = posts
 
+    all_users = []
+
+    data_counter = Post.objects.values('author') \
+                       .annotate(author_count=Count('author')) \
+                       .order_by('-author_count')[:6]
+
+    for aux in data_counter:
+        all_users.append(Profile.objects.filter(pk=aux['author']).first())
+    # if Preference.objects.get(user = self.request.user):
+    #     data['preference'] = True
+    # else:
+    #     data['preference'] = False
+    context['preference'] = Preference.objects.all()
+    # print(Preference.objects.get(user= self.request.user))
+    context['all_users'] = all_users
+    # print(all_users, file=sys.stderr)
+
     if posts:
         pass
     else:
         messages.success(request, "There is to relevent available")
 
     return render(request, 'blog/home.html', context)
-
 
 ################# Post List View (End) ################# #
 

@@ -3,7 +3,7 @@
 {% block content %}
     <div class="row">
         <div class="col-12 col-md-3 pr-4 dont-move">
-            <a href="/"><h2><img class="img-fluid" width="60" src="{% static 'blog/logo.png' %}">ReadyTweet</h2></a><br>
+            <a href="/"><h2><img class="img-fluid" width="60" src="{% static 'blog/logo.png' %}">CloneTweet</h2></a><br>
             <div class="profile-section">
                 <h3 class="white-important p-2">
                     Profile
@@ -11,17 +11,17 @@
                 <article class="media content-section" style="height: 140px; width: 100%">
                     {% if user %}
                         <div class="mt-2 d-flex full-width align-items-center">
-                        {% if not user.image.url %}
-                        <img
-                                    class="rounded-circle mr-3 img-fluid"
-                                    style="width: 90px; height: 90px;"
-                                    src="{{ user.image.url }}">
+                            {% if user.image.url %}
+                                <img
+                                        class="rounded-circle mr-3 img-fluid"
+                                        style="width: 90px; height: 90px;"
+                                        src="{{ user.image.url }}">
                             {% else %}
-                            <img
-                                    class="rounded-circle mr-3 img-fluid"
-                                    style="width: 90px; height: 90px;"
-                                    src="{% static 'default.png' %}" alt="">
-                        {% endif %}
+                                <img
+                                        class="rounded-circle mr-3 img-fluid"
+                                        style="width: 90px; height: 90px;"
+                                        src="{% static 'default.png' %}" alt="">
+                            {% endif %}
 
                             <div>
                                 <h4 style="text-align: left"
@@ -33,27 +33,11 @@
                                     {{ user.email }}
                                 </h6>
 
-                            </div>
-                        </div>
-                    {% else %}
-                        <div class="mt-2 d-flex full-width align-items-center">
-{#                            <img#}
-{#                                    class="rounded-circle mr-3"#}
-{#                                    style="width: 90px; height: 90px;"#}
-{#                                    src="{{ user.image.url }}">#}
-                            <div>
-                                <h4 style="text-align: left"
-                                    class="white-important">
-                                    {{ user.name }}
-                                </h4>
-                                <h6 style="text-align: left"
-                                    class="email-profile">
-                                    {{ user.email }}
-                                </h6>
                             </div>
                         </div>
                     {% endif %}
                 </article>
+
                 <article class="media content-section">
                     <div class="row full-width pl-2">
                         <div class="col-6">
@@ -62,43 +46,45 @@
                         <div class="col-6">
                             Following
                         </div>
-                        {% if user_profile != None %}
-                            <div class="col-6">
-                                <h3 class="white-important follow-click">
-                                    {#                                <a href="{% url 'user-followers' user_profile.username %}">#}
-                                    {#                                    {{ user_profile.profile.followers }}#}
-                                    {#                                </a>#}
-                                </h3>
-                            </div>
-                            <div class="col-6">
-                                <a href="{% url 'user-follows' user_profile.username %}">
-                                    <h3 class="white-important follow-click">
-                                        {{ user_profile.profile.following }}
-                                    </h3>
-                                </a>
-                            </div>
-                        {% else %}
-                            <div class="col-6">
-                                {#                            <a href="{% url 'user-followers' user.username %}">#}
-                                {#                                <h3 class="white-important follow-click">#}
-                                {#                                    {{ user.profile.followers }}#}
-                                {#                                </h3>#}
-                                {#                            </a>#}
-                            </div>
-
-                            {#                        <a href="{% url 'user-follows' user.username %}">#}
-                            {#                            <div class="col-6">#}
-                            {#                                <h3 class="white-important follow-click">#}
-                            {#                                    {{ user.profile.following }}#}
-                            {#                                </h3>#}
-                            {#                            </div>#}
-                            {#                        </a>#}
-                        {% endif %}
+{#                        {% if user %}#}
+{#                            <div class="col-6">#}
+{#                                <h3 class="white-important follow-click">#}
+{#                                                                    <a href="{% url 'user-followers' user_profile.username %}">#}
+{#                                                                        {{ user_profile.profile.followers }}#}
+{#                                                                    </a>#}
+{#                                </h3>#}
+{#                            </div>#}
+{#                            <div class="col-6">#}
+{#                                <a href="{% url 'user-follows' user_profile.username %}">#}
+{#                                    <h3 class="white-important follow-click">#}
+{#                                        {{ user_profile.profile.following }}#}
+{#                                    </h3>#}
+{#                                </a>#}
+{#                            </div>#}
+{#                        {% else %}#}
+{#                            <div class="col-6">#}
+{#                                                            <a href="{% url 'user-followers' user.username %}">#}
+{#                                                                <h3 class="white-important follow-click">#}
+{#                                                                    {{ user.profile.followers }}#}
+{#                                                                </h3>#}
+{#                                                            </a>#}
+{#                            </div>#}
+{##}
+{#                                                    <a href="{% url 'user-follows' user.username %}">#}
+{#                                                        <div class="col-6">#}
+{#                                                            <h3 class="white-important follow-click">#}
+{#                                                                {{ user.profile.following }}#}
+{#                                                            </h3>#}
+{#                                                        </div>#}
+{#                                                    </a>#}
+{#                        {% endif %}#}
                     </div>
                 </article>
 
+{#            End Left Side     #}
+
                 <div class="d-flex">
-                    {% if user_profile is None %}
+                    {% if user is None %}
                         <div style="margin-left: 40px">
                             {#                    <a class="btn btn-sm btn-outline-primary mb-4 mr-3 " href="{% url 'post-create' %}">#}
                             {#                        Tweet#}
@@ -149,10 +135,18 @@
                             <div
                                     style="padding-left: 0px !important;"
                                     class="col-8 no-padding d-flex align-items-center">
+                                {% if post.author.image %}
                                 <img
                                         class="rounded-circle mr-2"
                                         style="width: 20px; height: 20px;"
                                         src="{{ post.author.image.url }}">
+                                    {% else %}
+                                    <img
+                                        class="rounded-circle mr-2"
+                                        style="width: 20px; height: 20px;"
+                                        src="{% static 'default.png' %}">
+                                {% endif %} 
+
                                 {#                           <a class="mr-2 white-important" href="{% url 'user-posts' post.author %}">#}
                                 {#                               {{ post.author }}#}
                                 {#                           </a>#}
@@ -291,10 +285,19 @@
                                 <div
                                         style="padding-left: 0px !important;"
                                         class="col-8 no-padding d-flex align-items-center">
-                                    <img
+                                    {% if user.image %}
+                                        <img
                                             class="rounded-circle mr-2"
                                             style="width: 20px; height: 20px;"
                                             src="{{ user.image.url }}">
+                                        {% else %}
+                                    <img
+                                            class="rounded-circle mr-2"
+                                            style="width: 20px; height: 20px;"
+                                            src="{% static 'default.png' %}">
+                                    {% endif %} 
+
+                                    
                                     {#                                           <a class="mr-2 white-important" href="{% url 'user-posts' user.username %}">#}
                                     {#                                               {{ user.username }}#}
                                     {#                                           </a>#}
