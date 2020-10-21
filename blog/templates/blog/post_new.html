@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container">
+        <h3 class="white-important">
+            {#        {{  tag_line }}#}
+            Add a new post
+        </h3>
+        <form method="POST" class="col-12 col-md-6 no-padding pr-3 pr-md-0">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                            {{ form | crispy }}
+{#                <div class="">#}
+{#                    <textarea name="content" cols="40" rows="10" maxlength="1000"#}
+{#                              class="textarea form-control" required="" id="id_content"#}
+{#                              spellcheck="false">#}
+{##}
+{#                    </textarea>#}
+{#                </div>#}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-primary" type="submit">Submit changes</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

@@ -6,8 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, Q
 
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView
 
+from blog.forms import PostCreateForm
 from blog.models import *
 from users.models import Follow
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -145,9 +146,55 @@ def post_list_view(request):
 
     return render(request, 'blog/home.html', context)
 
+
 ################# Post List View (End) ################# #
 
-################# Like Functionality View (Start) ################# #
+
+# ################# Post Create View (Start) ################# #
+
+class PostCreateView(LoginRequiredMixin, CreateView):
+    model = Post
+    fields = ['content']
+    template_name = 'blog/post_new.html'
+    success_url = '/'
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['tag_line'] = 'Add a new post'
+        return data
+
+
+#####################################################
+
+@login_required
+def post_create_view(request):
+    context = {}
+
+    user = request.user
+    form = PostCreateForm()
+    if request.method == 'POST':
+        form = PostCreateForm(request.POST)# or None, request.FILES or None)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            author = request.user
+            obj.author = author
+            obj.save()
+            messages.success(request, "Posted your Content.")
+            return redirect('home')
+        else:
+            messages.success(request, "Post was not posted for an unknown error!!")
+
+    context["form"] = form
+
+    return render(request, "blog/post_new.html", context)
+
+# ################# Post Create View (End) ################# #
+
+# ################# Like Functionality View (Start) ################# #
 # @login_required
 # def postpreference(request, postid, userpreference):
 #     if request.method == "POST":

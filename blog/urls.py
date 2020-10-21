@@ -5,5 +5,6 @@ urlpatterns = [
     # path('', PostListView.as_view(), name='home'),
     path('', post_list_view, name='home'),
 
-    path('post/new/', PostCreateView.as_view(), name='post-create'),
+    # path('post/new/', PostCreateView.as_view(), name='post-create'),
+    path('post/new/', post_create_view, name='post-create'),
 ]
