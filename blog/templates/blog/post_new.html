@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crispy_forms_filters %}
 {% load crispy_forms_tags %}
 {% block content %}
     <div class="container">
@@ -10,13 +11,6 @@
             {% csrf_token %}
             <fieldset class="form-group">
                             {{ form | crispy }}
-{#                <div class="">#}
-{#                    <textarea name="content" cols="40" rows="10" maxlength="1000"#}
-{#                              class="textarea form-control" required="" id="id_content"#}
-{#                              spellcheck="false">#}
-{##}
-{#                    </textarea>#}
-{#                </div>#}
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-primary" type="submit">Submit changes</button>

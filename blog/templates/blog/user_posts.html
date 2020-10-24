@@ -1,4 +1,4 @@
-{#{% extends "base.html" %}#}
+{% extends "base.html" %}
 {% load static %}
 {% block content %}
     <div class="row">
@@ -150,13 +150,13 @@
                             </div>
                             <div class="col-4 d-flex flex-row-reverse no-padding align-items-center"
                                  style="padding-right: 0 !important;">
-                                {% if post.author == user_profile %}
-{#                                                                    <a class="material-icons ml-2"#}
-                                    {#                                                                       style="font-size: 14px"#}
-                                    {#                                                                            href="{% url 'post-delete' post.id %}">clear</a>#}
-                                    {#                                                                    <a class="material-icons ml-2"#}
-                                    {#                                                                       style="font-size: 14px"#}
-                                    {#                                                                            href="{% url 'post-update' post.id %}">update</a>#}
+                                {% if post.author == user %}
+                                    <a class="material-icons ml-2"
+                                       style="font-size: 14px"
+                                       href="{% url 'post-delete' post.id %}">clear</a>
+                                    <a class="material-icons ml-2"
+                                       style="font-size: 14px"
+                                       href="{% url 'post-update' post.id %}">update</a>
                                 {% endif %}
                             </div>
                         </div>
@@ -170,7 +170,6 @@
                                 {{ post.content }}
                             </p>
                         </a>
-
 
                         <div class="row">
                             <div class="col-6" style="display: flex;">
@@ -223,7 +222,6 @@
             {#            FILTERED Pagination#}
             {% include 'blog/snippets/post_pagination.html' %}
             {#            end pagination#}
-
         </div>
         <div class="col-12 col-md-3 dont-move">
             {#            <form action="{% url 'search' %}" method="post">{% csrf_token %}#}
@@ -272,9 +270,9 @@
                                     {% endif %}
 
 
-                                    {#                                           <a class="mr-2 white-important" href="{% url 'user-posts' user.username %}">#}
-                                    {#                                               {{ user.username }}#}
-                                    {#                                           </a>#}
+                                    <a class="mr-2 white-important" href="{% url 'user-posts' all_user.username %}">
+                                        {{ all_user.name }}
+                                    </a>
                                 </div>
                                 <p>{{ all_user.name }}</p>
                             </div>

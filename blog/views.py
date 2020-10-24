@@ -357,64 +357,64 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 
 # ################# Like Functionality View (Start) ################# #
-# @login_required
-# def postpreference(request, postid, userpreference):
-#     if request.method == "POST":
-#         eachpost = get_object_or_404(Post, id=postid)
-#         obj = ''
-#         valueobj = ''
-#         try:
-#             obj = Preference.objects.get(user=request.user, post=eachpost)
-#             valueobj = obj.value
-#             valueobj = int(valueobj)
-#             userpreference = int(userpreference)
-#             if valueobj != userpreference:
-#                 obj.delete()
-#                 upref = Preference()
-#                 upref.user = request.user
-#                 upref.post = eachpost
-#                 upref.value = userpreference
-#                 if userpreference == 1 and valueobj != 1:
-#                     eachpost.likes += 1
-#                     eachpost.dislikes -= 1
-#                 elif userpreference == 2 and valueobj != 2:
-#                     eachpost.dislikes += 1
-#                     eachpost.likes -= 1
-#                 upref.save()
-#                 eachpost.save()
-#                 context = {'eachpost': eachpost, 'postid': postid}
-#                 return redirect('blog-home')
-#             elif valueobj == userpreference:
-#                 obj.delete()
-#                 if userpreference == 1:
-#                     eachpost.likes -= 1
-#                 elif userpreference == 2:
-#                     eachpost.dislikes -= 1
-#                 eachpost.save()
-#                 context = {'eachpost': eachpost, 'postid': postid}
-#                 return redirect('blog-home')
+@login_required
+def postpreference(request, postid, userpreference):
+    if request.method == "POST":
+        eachpost = get_object_or_404(Post, id=postid)
+        obj = ''
+        valueobj = ''
+        try:
+            obj = Preference.objects.get(user=request.user, post=eachpost)
+            valueobj = obj.value
+            valueobj = int(valueobj)
+            userpreference = int(userpreference)
+            if valueobj != userpreference:
+                obj.delete()
+                upref = Preference()
+                upref.user = request.user
+                upref.post = eachpost
+                upref.value = userpreference
+                if userpreference == 1 and valueobj != 1:
+                    eachpost.likes += 1
+                    eachpost.dislikes -= 1
+                elif userpreference == 2 and valueobj != 2:
+                    eachpost.dislikes += 1
+                    eachpost.likes -= 1
+                upref.save()
+                eachpost.save()
+                context = {'eachpost': eachpost, 'postid': postid}
+                return redirect('blog-home')
+            elif valueobj == userpreference:
+                obj.delete()
+                if userpreference == 1:
+                    eachpost.likes -= 1
+                elif userpreference == 2:
+                    eachpost.dislikes -= 1
+                eachpost.save()
+                context = {'eachpost': eachpost, 'postid': postid}
+                return redirect('blog-home')
 
-#         except Preference.DoesNotExist:
-#             upref = Preference()
-#             upref.user = request.user
-#             upref.post = eachpost
-#             upref.value = userpreference
-#             userpreference = int(userpreference)
-#             if userpreference == 1:
-#                 eachpost.likes += 1
-#             elif userpreference == 2:
-#                 eachpost.dislikes += 1
-#             upref.save()
-#             eachpost.save()
+        except Preference.DoesNotExist:
+            upref = Preference()
+            upref.user = request.user
+            upref.post = eachpost
+            upref.value = userpreference
+            userpreference = int(userpreference)
+            if userpreference == 1:
+                eachpost.likes += 1
+            elif userpreference == 2:
+                eachpost.dislikes += 1
+            upref.save()
+            eachpost.save()
 
-#             context = {'post': eachpost, 'postid': postid}
+            context = {'post': eachpost, 'postid': postid}
 
-#             return redirect('blog-home')
+            return redirect('blog-home')
 
-#     else:
-#         eachpost = get_object_or_404(Post, id=postid)
-#         context = {'eachpost': eachpost, 'postid': postid}
+    else:
+        eachpost = get_object_or_404(Post, id=postid)
+        context = {'eachpost': eachpost, 'postid': postid}
 
-#         return redirect('home')
+        return redirect('home')
 
 # ################# Like Functionality View (End) ################# #
