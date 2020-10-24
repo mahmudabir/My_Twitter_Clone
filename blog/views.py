@@ -3,12 +3,12 @@ from django.http import HttpResponse
 import sys
 
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Count, Q
 
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, DetailView, DeleteView, UpdateView
 
-from blog.forms import PostCreateForm
+from blog.forms import PostCreateForm, NewCommentForm
 from blog.models import *
 from users.models import Follow
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -249,7 +249,34 @@ class UserPostListView(LoginRequiredMixin, ListView):
 # ################# User Post List View (End) ################# #
 
 
+# ################# Post Detail List View (Start) ################# #
+
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'blog/post_detail.html'
+    context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        comments_connected = Comment.objects.filter(post_connected=self.get_object()).order_by('-date_posted')
+        data['comments'] = comments_connected
+        data['form'] = NewCommentForm(instance=self.request.user)
+        return data
+
+    def post(self, request, *args, **kwargs):
+        new_comment = Comment(content=request.POST.get('content'),
+                              author=self.request.user,
+                              post_connected=self.get_object())
+        new_comment.save()
+
+        return self.get(self, request, *args, **kwargs)
+
+
+# ################# Post Detail List View (End) ################# #
+
+
 # ################# Follows List View (Start) ################# #
+
 class FollowsListView(ListView):
     model = Follow
     template_name = 'blog/follow.html'
@@ -272,6 +299,7 @@ class FollowsListView(ListView):
 
 
 # ################# Followers List View (Start) ################# #
+
 class FollowersListView(ListView):
     model = Follow
     template_name = 'blog/follow.html'
@@ -288,7 +316,44 @@ class FollowersListView(ListView):
         data = super().get_context_data(**kwargs)
         data['follow'] = 'followers'
         return data
+
+
 # ################# Followers List View (End) ################# #
+
+
+# ################# Post Delete View (Start) ################# #
+
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Post
+    template_name = 'blog/post_delete.html'
+    context_object_name = 'post'
+    success_url = '/'
+
+    def test_func(self):
+        return is_users(self.get_object().author, self.request.user)
+# ################# Post Delete View (End) ################# #
+
+
+# ################# Post Update View (Start) ################# #
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Post
+    fields = ['content']
+    template_name = 'blog/post_new.html'
+    success_url = '/'
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        return is_users(self.get_object().author, self.request.user)
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['tag_line'] = 'Edit a post'
+        return data
+# ################# Post Update View (End) ################# #
+
 
 
 # ################# Like Functionality View (Start) ################# #
