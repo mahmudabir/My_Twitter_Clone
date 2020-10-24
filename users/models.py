@@ -133,7 +133,7 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['name', 'email']
 
     def __str__(self):
-        return f'{self.username} Profile'
+        return self.username
 
     def has_perm(self, perm, obj=None):
         return self.is_admin

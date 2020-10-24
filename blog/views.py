@@ -177,7 +177,7 @@ def post_create_view(request):
     user = request.user
     form = PostCreateForm()
     if request.method == 'POST':
-        form = PostCreateForm(request.POST)# or None, request.FILES or None)
+        form = PostCreateForm(request.POST)  # or None, request.FILES or None)
         if form.is_valid():
             obj = form.save(commit=False)
             author = request.user
@@ -192,7 +192,104 @@ def post_create_view(request):
 
     return render(request, "blog/post_new.html", context)
 
+
 # ################# Post Create View (End) ################# #
+
+
+# ################# User Post List View (Start) ################# #
+class UserPostListView(LoginRequiredMixin, ListView):
+    model = Post
+    template_name = 'blog/user_posts.html'
+    context_object_name = 'posts'
+    paginate_by = PAGINATION_COUNT
+
+    def visible_user(self):
+        return get_object_or_404(Profile, username=self.kwargs.get('username'))
+
+    def get_context_data(self, **kwargs):
+        visible_user = self.visible_user()
+        logged_user = self.request.user
+        print(logged_user.username == '', file=sys.stderr)
+
+        if logged_user.username == '' or logged_user is None:
+            can_follow = False
+        else:
+            can_follow = (Follow.objects.filter(user=logged_user,
+                                                follow_user=visible_user).count() == 0)
+        data = super().get_context_data(**kwargs)
+
+        data['user_profile'] = visible_user
+        data['can_follow'] = can_follow
+        return data
+
+    def get_queryset(self):
+        user = self.visible_user()
+        return Post.objects.filter(author=user).order_by('-date_posted')
+
+    def post(self, request, *args, **kwargs):
+        if request.user.id is not None:
+            follows_between = Follow.objects.filter(user=request.user,
+                                                    follow_user=self.visible_user())
+
+            if 'follow' in request.POST:
+                new_relation = Follow(user=request.user, follow_user=self.visible_user())
+                if follows_between.count() == 0:
+                    new_relation.save()
+            elif 'unfollow' in request.POST:
+                if follows_between.count() > 0:
+                    follows_between.delete()
+
+        return self.get(self, request, *args, **kwargs)
+
+
+#################################################################
+
+# def user_post_list_view(request):
+
+# ################# User Post List View (End) ################# #
+
+
+# ################# Follows List View (Start) ################# #
+class FollowsListView(ListView):
+    model = Follow
+    template_name = 'blog/follow.html'
+    context_object_name = 'follows'
+
+    def visible_user(self):
+        return get_object_or_404(Profile, username=self.kwargs.get('username'))
+
+    def get_queryset(self):
+        user = self.visible_user()
+        return Follow.objects.filter(user=user).order_by('-date')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['follow'] = 'follows'
+        return data
+
+
+# ################# Follows List View (End) ################# #
+
+
+# ################# Followers List View (Start) ################# #
+class FollowersListView(ListView):
+    model = Follow
+    template_name = 'blog/follow.html'
+    context_object_name = 'follows'
+
+    def visible_user(self):
+        return get_object_or_404(Profile, username=self.kwargs.get('username'))
+
+    def get_queryset(self):
+        user = self.visible_user()
+        return Follow.objects.filter(follow_user=user).order_by('-date')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['follow'] = 'followers'
+        return data
+# ################# Followers List View (End) ################# #
+
 
 # ################# Like Functionality View (Start) ################# #
 # @login_required

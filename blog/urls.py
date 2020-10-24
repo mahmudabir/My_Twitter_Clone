@@ -7,4 +7,14 @@ urlpatterns = [
 
     # path('post/new/', PostCreateView.as_view(), name='post-create'),
     path('post/new/', post_create_view, name='post-create'),
+
+    path('user/<str:username>', UserPostListView.as_view(), name='user-posts'),
+    # path('user/<str:username>', user_post_list_view, name='user-posts'),
+
+    path('user/<str:username>/follows', FollowsListView.as_view(), name='user-follows'),
+    # path('user/<str:username>/follows', FollowsListView.as_view(), name='user-follows'),
+
+    path('user/<str:username>/followers', FollowersListView.as_view(), name='user-followers'),
+    # path('user/<str:username>/followers', FollowersListView.as_view(), name='user-followers'),
+
 ]
