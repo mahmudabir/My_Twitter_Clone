@@ -70,8 +70,6 @@
 
                 {#                    Follower & folow counter end#}
 
-                {#            End Left Side     #}
-
                 <div class="d-flex">
                     {% if user %}
                         <div style="margin-left: 65px">
@@ -80,26 +78,13 @@
                             </a>
                         </div>
                     {% endif %}
-
-                    {% if user_profile is not None and user_profile.id != user.id  and user.username != '' %}
-                        <form method="POST">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <button style="margin-left: 18px" class="btn btn-sm btn-outline-primary"
-                                        name="{% if can_follow %}follow{% else %}unfollow{% endif %}"
-                                        type="submit">
-                                    {% if can_follow %}
-                                        FOLLOW
-                                    {% else %}
-                                        UNFOLLOW
-                                    {% endif %}
-                                </button>
-                            </div>
-                        </form>
-                    {% endif %}
                 </div>
             </div>
         </div>
+        {#            End Left Side     #}
+
+
+        {#            Start Middle Part        #}
         <div class="col-12 col-md-6 scrollable">
             <div class="full-width row">
                 <div class="col-6">

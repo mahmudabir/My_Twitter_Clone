@@ -331,6 +331,8 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         return is_users(self.get_object().author, self.request.user)
+
+
 # ################# Post Delete View (End) ################# #
 
 
@@ -352,8 +354,9 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         data = super().get_context_data(**kwargs)
         data['tag_line'] = 'Edit a post'
         return data
-# ################# Post Update View (End) ################# #
 
+
+# ################# Post Update View (End) ################# #
 
 
 # ################# Like Functionality View (Start) ################# #
