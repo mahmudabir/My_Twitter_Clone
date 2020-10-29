@@ -26,4 +26,6 @@ urlpatterns = [
     path('user/<str:username>/followers', FollowersListView.as_view(), name='user-followers'),
     # path('user/<str:username>/followers', FollowersListView.as_view(), name='user-followers'),
 
+    path('post/<int:postid>/preference/<int:userpreference>', postpreference, name='postpreference'),
+
 ]
